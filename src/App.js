@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom'
+import ProductList from './components/ProductList';
+import ProductDetail from './components/ProductDetail';
 
 function App() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch("/json/productsData.json")
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .catch((error) => console.error("Error fetching products...", error));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<ProductList />} />
+          <Route path="/product/:id" element={<ProductDetail products={products} />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
+
+
+
 }
 
 export default App;
